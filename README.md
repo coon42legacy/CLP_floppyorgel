@@ -1,4 +1,4 @@
-CLP_floppyorgel
-===============
+CLP_SSD1289
+===========
 
-Floppy Orgel v3.0 for Connected Launchpad
+SSD1289 3.2" Display port for Connected Launchpad (energia)
