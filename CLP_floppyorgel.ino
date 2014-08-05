@@ -21,6 +21,8 @@
 // D0  - D7:  PK_0 - PK_7
 // D8  - D11  PE_0 - PE_3
 // D12 - D15: PE_4 - PE_7
+// SDA: PN_4
+// SCL: PN_5
 
 // SD-Pinout:
 // ==========
@@ -28,6 +30,7 @@
 
 #include "UTFT.h"
 #include "SD.h"
+#include <Wire.h>
 
 File root;
 
@@ -36,18 +39,33 @@ extern uint8_t SmallFont[];
 
 UTFT  myGLCD(SSD1289, PL_2, PL_1, PL_3, PL_0);   // Remember to change the model parameter to suit your display module!
 
+void setupLcd() {
+  pinMode(PA_4, OUTPUT); // LCD Chip Select
+  myGLCD.InitLCD();
+  myGLCD.setFont(SmallFont);
+}
+
+void setupButtons() {
+  pinMode(USR_SW1, INPUT); // UP
+  pinMode(USR_SW2, INPUT); // DOWN
+}
+
+void setupSdCard() {
+  pinMode(PA_5, OUTPUT); // SD Chip Select
+}
+
+void setupI2c() {
+  Wire.begin(); // join i2c bus (address optional for master)
+}
+
 void setup()
 {
   randomSeed(analogRead(0));
   
-// Setup the LCD
-  myGLCD.InitLCD();
-  myGLCD.setFont(SmallFont);
-  
-  pinMode(USR_SW1, INPUT); // UP
-  pinMode(USR_SW2, INPUT); // DOWN
-  pinMode(PA_4, OUTPUT); // LCD Chip Select
-  pinMode(PA_5, OUTPUT); // SD Chip Select
+  setupLcd();
+  setupButtons();
+  setupSdCard();
+  setupI2c();
 }
 
 void drawFrame() {
@@ -73,7 +91,7 @@ void drawMenu() {
 void loop()
 {
   int buf[318];
-  int x, x2;
+  int i, x2;
   int y, y2;
   int r;
 
@@ -85,17 +103,31 @@ void loop()
   Serial.begin(115200); 
   Serial.print("Initializing SD card...");
 
-  if (!SD.begin(PA_5, SPI_HALF_SPEED, 2)) {
-    Serial.println("initialization failed!");
-    return;
+  if (SD.begin(PA_5, SPI_HALF_SPEED, 2)) {
+    Serial.println("initialization done.");
+    root = SD.open("/");
+    printDirectory(root, 0);
+  
+    Serial.println("done!");
   }
-  Serial.println("initialization done.");
-  root = SD.open("/");
-  printDirectory(root, 0);
-
-  Serial.println("done!");
+  else {
+    Serial.println("Initialization failed!");
+    myGLCD.setColor(255,255,0);
+    myGLCD.print("NO SD CARD!", CENTER, 240 / 2);
+  }
    
-  while(true);
+  while(true) {
+    uint8_t x = 32 + (i % 24);;
+    Wire.beginTransmission(4); // transmit to device #4
+   // Wire.write("x is ");        // sends five bytes
+    Serial.print("x is ");
+    Wire.write(x);              // sends one byte  
+    Serial.println(x);
+    Wire.endTransmission();    // stop transmitting
+  
+    i++;
+    delay(1);
+  }
 }
 
 void printDirectory(File dir, int numTabs) {
