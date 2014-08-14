@@ -16,7 +16,7 @@
 // UTFT(byte model, int RS, int WR,int CS, int RST, int SER=0);
 // RS: PL2
 // WR: PL1
-// LCD_CS: PA_4
+// LCD_CS: PL_3
 // RESET: PL0 
 // D0  - D7:  PK_0 - PK_7
 // D8  - D11  PE_0 - PE_3
@@ -26,7 +26,10 @@
 
 // SD-Pinout:
 // ==========
-// SD_CS: PA_5
+// SD_CS: PL_4
+// MOSI:  PE_4
+// MISO:  PE_5
+// SCK:   PB_5
 
 #include "UTFT.h"
 #include "SD.h"
@@ -37,12 +40,16 @@ File root;
 // Declare which fonts we will be using
 extern uint8_t SmallFont[];
 
-UTFT  myGLCD(SSD1289, PL_2, PL_1, PL_3, PL_0);   // Remember to change the model parameter to suit your display module!
+UTFT myGLCD(SSD1289, PL_2, PL_1, PL_3, PL_0); // Remember to change the model parameter to suit your display module!
+
+void setupUart() {
+  Serial.begin(115200);
+}
 
 void setupLcd() {
-  pinMode(PA_4, OUTPUT); // LCD Chip Select
   myGLCD.InitLCD();
   myGLCD.setFont(SmallFont);
+  drawMenu();
 }
 
 void setupButtons() {
@@ -51,7 +58,21 @@ void setupButtons() {
 }
 
 void setupSdCard() {
-  pinMode(PA_5, OUTPUT); // SD Chip Select
+  pinMode(PL_4, OUTPUT); // SD Chip Select
+  Serial.print("Initializing SD card...");
+
+  if (SD.begin(PL_4, SPI_HALF_SPEED, 1)) {
+    Serial.println("initialization done.");
+    root = SD.open("/");
+    printDirectory(root, 0);
+  
+    Serial.println("done!");
+  }
+  else {
+    Serial.println("Initialization failed!");
+    myGLCD.setColor(255,255,0);
+    myGLCD.print("NO SD CARD!", CENTER, 240 / 2);
+  }
 }
 
 void setupI2c() {
@@ -62,10 +83,11 @@ void setup()
 {
   randomSeed(analogRead(0));
   
+  setupUart();
   setupLcd();
   setupButtons();
-  setupSdCard();
   setupI2c();
+  setupSdCard();
 }
 
 void drawFrame() {
@@ -82,10 +104,12 @@ void drawFrame() {
 
   myGLCD.setColor(0, 0, 255);
   myGLCD.drawRect(0, 14, 319, 225);  
+  myGLCD.setColor(255,255,0);
 }
 
 void drawMenu() {
-  //myGLCD.fillRect(4, 20, 315, 30);
+  myGLCD.clrScr();
+  drawFrame();
 }
 
 void loop()
@@ -94,39 +118,35 @@ void loop()
   int i, x2;
   int y, y2;
   int r;
-
-// Clear the screen and draw the frame
-  myGLCD.clrScr();
-  drawFrame();
-  drawMenu();
+ 
+  uint8_t midi_channel = 0;
+  uint8_t freq_low = 0;
+  uint8_t freq_high = 0;
+  uint16_t precalculatedHalfPeriod = 0;
   
-  Serial.begin(115200); 
-  Serial.print("Initializing SD card...");
-
-  if (SD.begin(PA_5, SPI_HALF_SPEED, 2)) {
-    Serial.println("initialization done.");
-    root = SD.open("/");
-    printDirectory(root, 0);
-  
-    Serial.println("done!");
-  }
-  else {
-    Serial.println("Initialization failed!");
-    myGLCD.setColor(255,255,0);
-    myGLCD.print("NO SD CARD!", CENTER, 240 / 2);
-  }
-   
+  Serial.println("Now waiting for floppy data...");
   while(true) {
-    uint8_t x = 32 + (i % 24);;
-    Wire.beginTransmission(4); // transmit to device #4
-   // Wire.write("x is ");        // sends five bytes
-    Serial.print("x is ");
-    Wire.write(x);              // sends one byte  
-    Serial.println(x);
-    Wire.endTransmission();    // stop transmitting
-  
-    i++;
-    delay(1);
+    if (Serial.available() > 2) {
+      midi_channel = Serial.read() / 2;
+      freq_high = Serial.read();
+      freq_low = Serial.read();
+      precalculatedHalfPeriod = (freq_high << 8) | freq_low;
+      
+      //Serial.print("Sending period: ");
+      //Serial.println(precalculatedHalfPeriod, DEC);
+      //Serial.print("Transmitting I2C... ");
+      Wire.beginTransmission(midi_channel);
+      Wire.write(freq_high);
+      Wire.write(freq_low);
+      Wire.endTransmission();    // stop transmitting
+      //Serial.println("done.");
+    
+      /*
+      drawMenu();
+      myGLCD.printNumI(midi_channel, CENTER, 280 / 2, 0, 0);
+      myGLCD.printNumI(precalculatedHalfPeriod, CENTER, 300 / 2, 0, 0);  
+      */
+    }
   }
 }
 
