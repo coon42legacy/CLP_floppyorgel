@@ -5,9 +5,9 @@
 // Arduino bootloader.
 
 // Created 30 July 2014
-// Last edit: 14 August 2014
+// Last edit: 16 August 2014
 
-#define BUILD_VER "0.6"
+#define BUILD_VER "0.7"
 #include <WSWire.h>
 #include <avr/wdt.h>
 #include "FloppyM0dule.h"
@@ -35,14 +35,21 @@ uint8_t getFloppyAddress() {
   return (~PIND >> 2) & 0x3F;
 }
 
-void setup() {
+void initTimer1() {
+  TCCR1A = 0x00; // normal operation page 148 (mode0);
+  TCNT1  = 0x0000;  // set initial value to remove time error (16bit counter register)
+  TCCR1B = 0x02; // start timer/ set clock
+}
+
+void setup() { 
+  initTimer1();
   initDipSwitch();
   initFloppyM0dule();
   initUART();
   initI2C();
   resetDrive();
   //wdt_enable(WDTO_2S); // if the atmega hangs, it will reboot itself after 2 seconds 
-  
+   
   Serial.print("Floppy controller initialized with MIDI channel ");
   Serial.print(getFloppyAddress(), DEC);
   Serial.println(". (Build Version: " BUILD_VER ")");  
@@ -71,14 +78,14 @@ void loop()
 
 void onReceiveI2C(int numBytes)
 { 
+  static uint8_t period_high = 0;
+  static uint8_t period_low = 0;
+  
   while(Wire.available())
   {    
-    uint8_t period_high = Wire.read();
-    uint8_t period_low = Wire.read();
+    period_high = Wire.read();
+    period_low = Wire.read();
     uint16_t period = period_high << 8 | period_low;
-    playTone(1000000 / period);
-    
-    Serial.print("Playing frequency: ");
-    Serial.println(period = period > 0 ? 500000 / period : 0);
+    playTone(period); 
   }
 }

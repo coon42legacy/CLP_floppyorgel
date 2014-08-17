@@ -16,10 +16,10 @@ void driveSelect(boolean enable) {
 
 void setHeadDirection(int headDirection) {
   currentHeadDirection = headDirection;
-  digitalWrite(PIN_DIRECTION, headDirection == FORWARD ? LOW : HIGH);  
+  digitalWrite(PIN_DIRECTION, headDirection == FORWARD ? LOW : HIGH);
 }
 
-void toggleStep() {  
+void toggleStep() {
   // Switch head direction if end has been reached
   if (currentHeadPosition >= 2 * MAX_STEP_POSITION)
     setHeadDirection(BACKWARD);
@@ -54,20 +54,18 @@ void resetDrive() {
 
 void tick() {
   if (currentPeriod > 0) {
-    uint16_t curTime = micros() - startTime;
-        
-    if (curTime >= currentPeriod) {
+    if(TCNT1 >= currentPeriod) {
+      TCNT1 = 0;
       toggleStep();
-      startTime = micros();
     }
   }
 }
 
 // Note: The minimum resolution for micros() is 4us.
-void playTone(uint16_t frequency) {
-  currentPeriod = frequency > 0 && frequency < 2 * MAX_FREQUENCY ? 100000000 / frequency : 0;
+void playTone(uint16_t period) {  
+  currentPeriod = period; 
   driveSelect(currentPeriod ? true : false);
-  startTime = micros();
+  TCNT1 = 0;
 }
 
 void mute() {
