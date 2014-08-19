@@ -12,7 +12,6 @@
 #include <avr/wdt.h>
 #include "FloppyM0dule.h"
 
-
 void initDipSwitch() {
   pinMode(2, INPUT_PULLUP); // 1
   pinMode(3, INPUT_PULLUP); // 2
@@ -24,11 +23,12 @@ void initDipSwitch() {
 
 void initI2C() {
   Wire.begin(getFloppyAddress()); // Join I2C bus on address set on DIP switch.
-  Wire.onReceive(onReceiveI2C); // Register I2C event callback
+  Wire.onReceive(onRecvI2C); // Register I2C event callback
+  Wire.onRequest(onI2CRequest);
 }
 
 void initUART() {
-  Serial.begin(115200); // start serial for output
+  Serial.begin(9600); // start serial for output
 }
 
 uint8_t getFloppyAddress() {
@@ -72,20 +72,69 @@ void loop()
 {
   tick();
   checkDipSwitchChange(); 
-  
+  checkI2Cdata(0);
   //wdt_reset(); // watchdog reset
 }
 
-void onReceiveI2C(int numBytes)
-{ 
-  static uint8_t period_high = 0;
-  static uint8_t period_low = 0;
+void onRecvI2C(int numBytes) {
+  // It seems the arduino I2C library doesen't support non interrupt based
+  // I2C communication. The I2C bus will be released after this function returns
+  // so this will be left empty to do this as fast as possible.
   
-  while(Wire.available())
-  {    
-    period_high = Wire.read();
-    period_low = Wire.read();
-    uint16_t period = period_high << 8 | period_low;
-    playTone(period); 
+  // The processing of I2C data is done in the checkI2Cdata function.
+}
+
+void onI2CRequest() {
+  Serial.println("onI2CRequest");
+}
+
+void checkI2Cdata(int numBytes)
+{  
+  static uint8_t period_low = 0;
+  static uint8_t period_high = 0;
+  static uint8_t syncState = 0;
+  static uint8_t syncErrors = 0;
+  static boolean inErrorState = false;
+  
+  if(Wire.available()) {
+    switch(syncState) {
+      case 0:
+        if(Wire.read() == 0x55) {
+          syncState = 1;
+          inErrorState = false;
+        }
+        else {
+          syncState = 0;
+          
+          if(!inErrorState) {
+            Serial.print("Sync Errors: ");     
+            Serial.println(++syncErrors);
+          }
+          inErrorState = true;
+        }
+        break;
+      
+      case 1:
+        if(Wire.read() == 0xAA)
+          syncState = 2;
+        else {
+          syncState = 0;
+          inErrorState = true;
+          
+          Serial.print("Sync Errors: ");
+          Serial.println(++syncErrors);
+        }
+        break;
+        
+      case 2:
+        if(Wire.available() > 1) {
+          period_high = Wire.read();
+          period_low = Wire.read();
+          playTone(period_high << 8 | period_low); 
+          
+          syncState = 0;
+        }
+        break;
+    }
   }
 }
