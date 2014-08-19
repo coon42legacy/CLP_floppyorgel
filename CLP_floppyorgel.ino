@@ -12,8 +12,6 @@
 
 // LCD-Pinout:
 // ===========
-// 
-// UTFT(byte model, int RS, int WR,int CS, int RST, int SER=0);
 // RS: PL2
 // WR: PL1
 // LCD_CS: PL_3
@@ -21,6 +19,9 @@
 // D0  - D7:  PK_0 - PK_7
 // D8  - D11  PE_0 - PE_3
 // D12 - D15: PE_4 - PE_7
+
+// I2C-Pinout:
+// ===========
 // SDA: PN_4
 // SCL: PN_5
 
@@ -43,7 +44,7 @@ extern uint8_t SmallFont[];
 UTFT myGLCD(SSD1289, PL_2, PL_1, PL_3, PL_0); // Remember to change the model parameter to suit your display module!
 
 void setupUart() {
-  Serial.begin(115200);
+  Serial.begin(9600);
 }
 
 void setupLcd() {
@@ -114,40 +115,66 @@ void drawMenu() {
 
 void loop()
 {
-  int buf[318];
-  int i, x2;
-  int y, y2;
-  int r;
- 
   uint8_t midi_channel = 0;
-  uint8_t freq_low = 0;
-  uint8_t freq_high = 0;
-  uint16_t precalculatedHalfPeriod = 0;
-  
+  uint8_t period_low = 0;
+  uint8_t period_high = 0;
+  uint16_t period = 0;
   Serial.println("Now waiting for floppy data...");
+
+  uint8_t syncState = 0;
+  uint8_t syncErrors = 0;
+  
   while(true) {
-    if (Serial.available() > 2) {
-      midi_channel = Serial.read() / 2;
-      freq_high = Serial.read();
-      freq_low = Serial.read();
-      precalculatedHalfPeriod = (freq_high << 8) | freq_low;
-      
-      //Serial.print("Sending period: ");
-      //Serial.println(precalculatedHalfPeriod, DEC);
-      //Serial.print("Transmitting I2C... ");
-      Wire.beginTransmission(midi_channel);
-      Wire.write(freq_high);
-      Wire.write(freq_low);
-      Wire.endTransmission();    // stop transmitting
-      //Serial.println("done.");
-    
-      /*
-      drawMenu();
-      myGLCD.printNumI(midi_channel, CENTER, 280 / 2, 0, 0);
-      myGLCD.printNumI(precalculatedHalfPeriod, CENTER, 300 / 2, 0, 0);  
-      */
+    if (Serial.available()) {
+      switch(syncState) {
+        case 0:
+          if(Serial.read() == 0x55) 
+            syncState = 1;
+          else {
+            syncState = 0;
+            
+            myGLCD.clrScr();
+            myGLCD.print("Sync Errors: ", CENTER, 120);
+            myGLCD.printNumI(++syncErrors, CENTER, 130);
+          } 
+          break;
+        
+        case 1:
+          if(Serial.read() == 0xAA) 
+            syncState = 2;
+          else {
+            syncState = 0;
+            myGLCD.clrScr();
+            myGLCD.print("Sync Errors: ", CENTER, 120);
+            myGLCD.printNumI(++syncErrors, CENTER, 130);
+          } 
+        break;
+              
+        case 2:
+          if(Serial.available() > 2) {
+            midi_channel = Serial.read();
+            period_high = Serial.read();
+            period_low = Serial.read();
+            
+            Wire.beginTransmission(midi_channel);
+            Wire.write(0x55);
+            Wire.write(0xAA);
+            Wire.write(period_high);
+            Wire.write(period_low);
+            Wire.endTransmission();
+            
+            syncState = 0;
+            /*
+            myGLCD.clrScr();
+            myGLCD.print("On Sync.", CENTER, 120);
+            */
+          }
+        break;
+      }
     }
   }
+  
+  
 }
 
 void printDirectory(File dir, int numTabs) {
