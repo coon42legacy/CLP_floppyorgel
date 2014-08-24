@@ -34,7 +34,8 @@
 
 #include "UTFT.h"
 #include "SD.h"
-#include <Wire.h>
+#include "Wire_hotfix.h"
+
 
 File root;
 
@@ -81,9 +82,8 @@ void setupI2c() {
 }
 
 void setup()
-{
-  randomSeed(analogRead(0));
-  
+{  
+  //randomSeed(analogRead(0));
   setupUart();
   setupLcd();
   setupButtons();
@@ -123,8 +123,16 @@ void loop()
 
   uint8_t syncState = 0;
   uint8_t syncErrors = 0;
+  uint32_t lastTime = millis();
   
   while(true) {
+    /*
+    if(millis() - lastTime > 250) {
+      digitalWrite(RED_LED, !digitalRead(RED_LED));
+      lastTime = millis();
+    }
+    */
+    
     if (Serial.available()) {
       switch(syncState) {
         case 0:
@@ -173,8 +181,6 @@ void loop()
       }
     }
   }
-  
-  
 }
 
 void printDirectory(File dir, int numTabs) {

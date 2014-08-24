@@ -5,7 +5,7 @@
 // Arduino bootloader.
 
 // Created 30 July 2014
-// Last edit: 16 August 2014
+// Last edit: 22 August 2014
 
 #define BUILD_VER "0.7"
 #include <WSWire.h>
@@ -64,7 +64,7 @@ void checkDipSwitchChange() {
     Serial.println(getFloppyAddress(), DEC);
     my_old_address = getFloppyAddress();
     Wire.begin(getFloppyAddress()); // Change I2C address
-    playTone(0);
+    mute();
   }
 }
 
