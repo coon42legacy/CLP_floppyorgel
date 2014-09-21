@@ -73,6 +73,7 @@ void checkDipSwitchChange() {
     Serial.println(getFloppyAddress(), DEC);
     my_old_address = getFloppyAddress();
     playTone(0);
+    mute();
   }
 }
 
