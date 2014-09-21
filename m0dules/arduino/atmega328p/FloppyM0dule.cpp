@@ -52,7 +52,7 @@ void resetDrive() {
   setHeadDirection(FORWARD); // Ready to go forward.
 }
 
-void tick() {
+void floppyM0duleTick() {
   if (currentPeriod > 0) {
     if(TCNT1 >= currentPeriod) {
       TCNT1 = 0;

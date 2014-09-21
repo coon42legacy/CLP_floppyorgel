@@ -5,10 +5,9 @@
 // Arduino bootloader.
 
 // Created 30 July 2014
-// Last edit: 16 August 2014
+// Last edit: 21 September 2014
 
 #define BUILD_VER "0.7"
-#include <WSWire.h>
 #include <avr/wdt.h>
 #include "FloppyM0dule.h"
 
@@ -21,10 +20,20 @@ void initDipSwitch() {
   pinMode(7, INPUT_PULLUP); // 6
 }
 
-void initI2C() {
-  Wire.begin(getFloppyAddress()); // Join I2C bus on address set on DIP switch.
-  Wire.onReceive(onRecvI2C); // Register I2C event callback
-  Wire.onRequest(onI2CRequest);
+void rs485listenMode() {
+  digitalWrite(8, LOW); // Enable bus input
+  digitalWrite(9, LOW); // // Disable bus output
+}
+
+void rs485sendMode() {
+  digitalWrite(8, HIGH); // disable bus input
+  digitalWrite(9, HIGH); // // enable bus output
+}
+
+void initRS485() {
+  pinMode(8, OUTPUT); // PB0
+  pinMode(9, OUTPUT); // PB1
+  rs485listenMode();
 }
 
 void initUART() {
@@ -46,7 +55,7 @@ void setup() {
   initDipSwitch();
   initFloppyM0dule();
   initUART();
-  initI2C();
+  initRS485();
   resetDrive();
   //wdt_enable(WDTO_2S); // if the atmega hangs, it will reboot itself after 2 seconds 
    
@@ -63,43 +72,28 @@ void checkDipSwitchChange() {
     Serial.print(" to ");
     Serial.println(getFloppyAddress(), DEC);
     my_old_address = getFloppyAddress();
-    Wire.begin(getFloppyAddress()); // Change I2C address
     playTone(0);
   }
 }
 
-void loop()
-{
-  tick();
+void loop() {
+  floppyM0duleTick();
   checkDipSwitchChange(); 
-  checkI2Cdata(0);
+  checkRS485data();
   //wdt_reset(); // watchdog reset
 }
 
-void onRecvI2C(int numBytes) {
-  // It seems the arduino I2C library doesen't support non interrupt based
-  // I2C communication. The I2C bus will be released after this function returns
-  // so this will be left empty to do this as fast as possible.
-  
-  // The processing of I2C data is done in the checkI2Cdata function.
-}
-
-void onI2CRequest() {
-  Serial.println("onI2CRequest");
-}
-
-void checkI2Cdata(int numBytes)
-{  
+void checkRS485data() {  
   static uint8_t period_low = 0;
   static uint8_t period_high = 0;
   static uint8_t syncState = 0;
   static uint8_t syncErrors = 0;
   static boolean inErrorState = false;
   
-  if(Wire.available()) {
+  if(Serial.available()) {
     switch(syncState) {
       case 0:
-        if(Wire.read() == 0x55) {
+        if(Serial.read() == 0x55) {
           syncState = 1;
           inErrorState = false;
         }
@@ -115,7 +109,7 @@ void checkI2Cdata(int numBytes)
         break;
       
       case 1:
-        if(Wire.read() == 0xAA)
+        if(Serial.read() == 0xAA)
           syncState = 2;
         else {
           syncState = 0;
@@ -127,9 +121,9 @@ void checkI2Cdata(int numBytes)
         break;
         
       case 2:
-        if(Wire.available() > 1) {
-          period_high = Wire.read();
-          period_low = Wire.read();
+        if(Serial.available() > 1) {
+          period_high = Serial.read();
+          period_low = Serial.read();
           playTone(period_high << 8 | period_low); 
           
           syncState = 0;
