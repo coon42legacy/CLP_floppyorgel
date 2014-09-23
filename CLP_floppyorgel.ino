@@ -32,9 +32,16 @@
 // MISO:  PE_5
 // SCK:   PB_5
 
+// GamePad-Pinout:
+// ===============
+//  Data:  PM_0
+//  Latch: PM_1 
+//  Clock: PM_2 
+
 #include "UTFT.h"
 #include "SD.h"
 #include "Wire_hotfix.h"
+#include "NesGamePad.h"
 
 
 File root;
@@ -45,7 +52,7 @@ extern uint8_t SmallFont[];
 UTFT myGLCD(SSD1289, PL_2, PL_1, PL_3, PL_0); // Remember to change the model parameter to suit your display module!
 
 void setupUart() {
-  Serial.begin(9600);
+  Serial.begin(115200);
 }
 
 void setupLcd() {
@@ -115,6 +122,31 @@ void drawMenu() {
 
 void loop()
 {
+  setupGamePad();
+  
+  while(true) {
+    NesGamePadStates_t state = getGamepadState();
+    
+    /*
+    Serial.print("State: 0x"); 
+    if(state.code < 0x10) Serial.print("0");
+    Serial.println(state.code, HEX);
+    */
+    
+    Serial.print("A: ");      if(state.states.A)      Serial.print(" ON"); else Serial.print("OFF"); Serial.print(" | ");
+    Serial.print("B: ");      if(state.states.B)      Serial.print(" ON"); else Serial.print("OFF"); Serial.print(" | ");
+    Serial.print("UP: ");     if(state.states.North)  Serial.print(" ON"); else Serial.print("OFF"); Serial.print(" | ");
+    Serial.print("DOWN: ");   if(state.states.South)  Serial.print(" ON"); else Serial.print("OFF"); Serial.print(" | ");
+    Serial.print("LEFT: ");   if(state.states.West)   Serial.print(" ON"); else Serial.print("OFF"); Serial.print(" | ");
+    Serial.print("RIGHT: ");  if(state.states.East)   Serial.print(" ON"); else Serial.print("OFF"); Serial.print(" | ");
+    Serial.print("START: ");  if(state.states.Start)  Serial.print(" ON"); else Serial.print("OFF"); Serial.print(" | ");
+    Serial.print("SELECT: "); if(state.states.Select) Serial.print(" ON"); else Serial.print("OFF"); Serial.print(" | ");
+    Serial.println("");
+    
+    
+    delay(50);
+  }
+  
   uint8_t midi_channel = 0;
   uint8_t period_low = 0;
   uint8_t period_high = 0;
