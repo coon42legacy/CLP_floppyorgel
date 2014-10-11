@@ -5,10 +5,9 @@
 // Arduino bootloader.
 
 // Created 30 July 2014
-// Last edit: 21 September 2014
+// Last edit: 11 October 2014
 
-#define BUILD_VER "0.7"
-#include <avr/wdt.h>
+#define BUILD_VER "0.8"
 #include "FloppyM0dule.h"
 
 void initDipSwitch() {
@@ -21,23 +20,23 @@ void initDipSwitch() {
 }
 
 void rs485listenMode() {
-  digitalWrite(8, LOW); // Enable bus input
-  digitalWrite(9, LOW); // // Disable bus output
+  digitalWrite(PIN_RS485_DE,  LOW); // Enable bus input
+  digitalWrite(PIN_RS485_NRE, LOW); // Disable bus output
 }
 
 void rs485sendMode() {
-  digitalWrite(8, HIGH); // disable bus input
-  digitalWrite(9, HIGH); // // enable bus output
+  digitalWrite(PIN_RS485_DE,  HIGH); // Disable bus input
+  digitalWrite(PIN_RS485_NRE, HIGH); // Enable bus output
 }
 
 void initRS485() {
-  pinMode(8, OUTPUT); // PB0
-  pinMode(9, OUTPUT); // PB1
+  pinMode(PIN_RS485_DE,  OUTPUT); // Driver Outputs Enable
+  pinMode(PIN_RS485_NRE, OUTPUT); // Receive Output Enable
   rs485listenMode();
 }
 
 void initUART() {
-  Serial.begin(9600); // start serial for output
+  Serial.begin(9600); // Start serial for output
 }
 
 uint8_t getFloppyAddress() {
@@ -45,19 +44,20 @@ uint8_t getFloppyAddress() {
 }
 
 void initTimer1() {
-  TCCR1A = 0x00; // normal operation page 148 (mode0);
-  TCNT1  = 0x0000;  // set initial value to remove time error (16bit counter register)
-  TCCR1B = 0x02; // start timer/ set clock
+  // Since the timer resolution of the Arduino library is too low, the registers
+  // of the ATMega328 will be configured diectly here.
+  TCCR1A = 0x00;   // Normal operation page 148 (mode0);
+  TCNT1  = 0x0000; // Set initial value to remove time error (16bit counter register)
+  TCCR1B = 0x02;   // Start timer and clock
 }
 
-void setup() { 
+void setup() {
   initTimer1();
   initDipSwitch();
   initFloppyM0dule();
   initUART();
   initRS485();
   resetDrive();
-  //wdt_enable(WDTO_2S); // if the atmega hangs, it will reboot itself after 2 seconds 
    
   Serial.print("Floppy controller initialized with MIDI channel ");
   Serial.print(getFloppyAddress(), DEC);
@@ -81,10 +81,10 @@ void loop() {
   floppyM0duleTick();
   checkDipSwitchChange(); 
   checkRS485data();
-  //wdt_reset(); // watchdog reset
 }
 
 void checkRS485data() {  
+  static uint8_t midi_channel = 0;
   static uint8_t period_low = 0;
   static uint8_t period_high = 0;
   static uint8_t syncState = 0;
@@ -122,10 +122,13 @@ void checkRS485data() {
         break;
         
       case 2:
-        if(Serial.available() > 1) {
+        if(Serial.available() > 2) {
+          midi_channel = Serial.read();
           period_high = Serial.read();
           period_low = Serial.read();
-          playTone(period_high << 8 | period_low); 
+          
+          if(midi_channel == getFloppyAddress())
+            playTone(period_high << 8 | period_low); 
           
           syncState = 0;
         }

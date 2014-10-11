@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include "FloppyM0dule_conf.h"
 
 #define FORWARD LOW
 #define BACKWARD HIGH
@@ -16,7 +17,3 @@ static uint8_t currentHeadPosition  = 0;
 static uint8_t currentHeadDirection = FORWARD;
 static uint8_t currentStepPinState  = LOW;
 static uint32_t currentPeriod = 0;
-
-// temp stuff
-static uint16_t loops = 0;
-static uint16_t rest  = 0;

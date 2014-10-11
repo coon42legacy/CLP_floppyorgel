@@ -20,10 +20,10 @@
 // D8  - D11  PE_0 - PE_3
 // D12 - D15: PE_4 - PE_7
 
-// I2C-Pinout:
-// ===========
-// SDA: PN_4
-// SCL: PN_5
+// RS485-Pinout:
+// =================================
+// DE (Driver Outputs Enable):  PQ_2
+// /RE (Receive Output Enable): PQ_3
 
 // SD-Pinout:
 // ==========
@@ -40,11 +40,10 @@
 
 #include "UTFT.h"
 #include "SD.h"
-#include "Wire_hotfix.h"
 #include "NesGamePad.h"
 
-
 File root;
+
 
 // Declare which fonts we will be using
 extern uint8_t SmallFont[];
@@ -52,7 +51,7 @@ extern uint8_t SmallFont[];
 UTFT myGLCD(SSD1289, PL_2, PL_1, PL_3, PL_0); // Remember to change the model parameter to suit your display module!
 
 void setupUart() {
-  Serial.begin(115200);
+  Serial.begin(9600);
 }
 
 void setupLcd() {
@@ -84,8 +83,16 @@ void setupSdCard() {
   }
 }
 
-void setupI2c() {
-  Wire.begin(); // join i2c bus (address optional for master)
+void setupRS485() {
+  pinMode(PQ_2, OUTPUT); // Driver Output Enable
+  pinMode(PQ_3, OUTPUT); // /Receive Output Enable
+  
+  digitalWrite(PQ_2, HIGH); // Driver Output Enable
+  digitalWrite(PQ_3, HIGH);  // /Receive Output Enable
+  
+  // TODO: Enable Serial Port 3 here
+  Serial3.begin(9600);
+  
 }
 
 void setup()
@@ -94,8 +101,9 @@ void setup()
   setupUart();
   setupLcd();
   setupButtons();
-  setupI2c();
+  setupRS485();
   setupSdCard();
+  setupGamePad();
 }
 
 void drawFrame() {
@@ -121,31 +129,23 @@ void drawMenu() {
 }
 
 void loop()
-{
-  setupGamePad();
-  
+{  
+  /*
   while(true) {
     NesGamePadStates_t state = getGamepadState();
-    
-    /*
-    Serial.print("State: 0x"); 
-    if(state.code < 0x10) Serial.print("0");
-    Serial.println(state.code, HEX);
-    */
-    
-    Serial.print("A: ");      if(state.states.A)      Serial.print(" ON"); else Serial.print("OFF"); Serial.print(" | ");
-    Serial.print("B: ");      if(state.states.B)      Serial.print(" ON"); else Serial.print("OFF"); Serial.print(" | ");
-    Serial.print("UP: ");     if(state.states.North)  Serial.print(" ON"); else Serial.print("OFF"); Serial.print(" | ");
-    Serial.print("DOWN: ");   if(state.states.South)  Serial.print(" ON"); else Serial.print("OFF"); Serial.print(" | ");
-    Serial.print("LEFT: ");   if(state.states.West)   Serial.print(" ON"); else Serial.print("OFF"); Serial.print(" | ");
-    Serial.print("RIGHT: ");  if(state.states.East)   Serial.print(" ON"); else Serial.print("OFF"); Serial.print(" | ");
-    Serial.print("START: ");  if(state.states.Start)  Serial.print(" ON"); else Serial.print("OFF"); Serial.print(" | ");
-    Serial.print("SELECT: "); if(state.states.Select) Serial.print(" ON"); else Serial.print("OFF"); Serial.print(" | ");
-    Serial.println("");
-    
+    Serial3.print("A: ");      if(state.states.A)      Serial3.print(" ON"); else Serial3.print("OFF"); Serial3.print(" | ");
+    Serial3.print("B: ");      if(state.states.B)      Serial3.print(" ON"); else Serial3.print("OFF"); Serial3.print(" | ");
+    Serial3.print("UP: ");     if(state.states.North)  Serial3.print(" ON"); else Serial3.print("OFF"); Serial3.print(" | ");
+    Serial3.print("DOWN: ");   if(state.states.South)  Serial3.print(" ON"); else Serial3.print("OFF"); Serial3.print(" | ");
+    Serial3.print("LEFT: ");   if(state.states.West)   Serial3.print(" ON"); else Serial3.print("OFF"); Serial3.print(" | ");
+    Serial3.print("RIGHT: ");  if(state.states.East)   Serial3.print(" ON"); else Serial3.print("OFF"); Serial3.print(" | ");
+    Serial3.print("START: ");  if(state.states.Start)  Serial3.print(" ON"); else Serial3.print("OFF"); Serial3.print(" | ");
+    Serial3.print("SELECT: "); if(state.states.Select) Serial3.print(" ON"); else Serial3.print("OFF"); Serial3.print(" | ");
+    Serial3.println("");
     
     delay(50);
   }
+  */
   
   uint8_t midi_channel = 0;
   uint8_t period_low = 0;
@@ -196,18 +196,16 @@ void loop()
             period_high = Serial.read();
             period_low = Serial.read();
             
-            Wire.beginTransmission(midi_channel);
-            Wire.write(0x55);
-            Wire.write(0xAA);
-            Wire.write(period_high);
-            Wire.write(period_low);
-            Wire.endTransmission();
-            
+            Serial3.write(0x55);
+            Serial3.write(0xAA);
+            Serial3.write(midi_channel);
+            Serial3.write(period_high);
+            Serial3.write(period_low);
+
             syncState = 0;
-            /*
-            myGLCD.clrScr();
-            myGLCD.print("On Sync.", CENTER, 120);
-            */
+            
+            // myGLCD.clrScr();
+            // myGLCD.print("On Sync.", CENTER, 120);
           }
         break;
       }

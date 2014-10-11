@@ -1,5 +1,4 @@
 #include "FloppyM0dule.h"
-#include "FloppyM0dule_conf.h"
 
 void initFloppyM0dule() {
   pinMode(PIN_DRIVE_SELECT, OUTPUT); 
