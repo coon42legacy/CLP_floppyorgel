@@ -1,4 +1,4 @@
-#include "NesGamepad.h"
+#include "NesGamePad.h"
 
 void setupGamePad() {
   pinMode(GAMEPAD_DATA, INPUT);
