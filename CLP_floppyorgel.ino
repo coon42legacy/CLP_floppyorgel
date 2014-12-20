@@ -90,7 +90,6 @@ void setupRS485() {
   digitalWrite(PQ_2, HIGH); // Driver Output Enable
   digitalWrite(PQ_3, HIGH);  // /Receive Output Enable
   
-  // TODO: Enable Serial Port 3 here
   Serial3.begin(9600);
   
 }

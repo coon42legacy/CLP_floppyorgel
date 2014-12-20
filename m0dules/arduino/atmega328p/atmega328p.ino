@@ -58,6 +58,8 @@ void setup() {
   initUART();
   initRS485();
   resetDrive();
+  
+  digitalWrite(PIN_DEBUG, HIGH);
    
   Serial.print("Floppy controller initialized with MIDI channel ");
   Serial.print(getFloppyAddress(), DEC);
