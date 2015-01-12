@@ -7,7 +7,7 @@
 // Created 30 July 2014
 // Last edit: 11 October 2014
 
-#define BUILD_VER "0.8"
+#define BUILD_VER "1.0"
 #include "FloppyM0dule.h"
 
 void initDipSwitch() {
@@ -48,7 +48,7 @@ void initTimer1() {
   // of the ATMega328 will be configured diectly here.
   TCCR1A = 0x00;   // Normal operation page 148 (mode0);
   TCNT1  = 0x0000; // Set initial value to remove time error (16bit counter register)
-  TCCR1B = 0x02;   // Start timer and clock
+  TCCR1B = 0x02;   // Start timer and clock with prescaler of 8
 }
 
 void setup() {
@@ -60,6 +60,7 @@ void setup() {
   resetDrive();
   
   digitalWrite(PIN_DEBUG, HIGH);
+  digitalWrite(PIN_UNDER_CHIP, HIGH);
    
   Serial.print("Floppy controller initialized with MIDI channel ");
   Serial.print(getFloppyAddress(), DEC);
