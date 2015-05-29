@@ -51,6 +51,23 @@ void initTimer1() {
   TCCR1B = 0x02;   // Start timer and clock with prescaler of 8
 }
 
+void enableUnderChip(bool enable) {
+  if(enable) {
+    pinMode(PIN_UNDER_CHIP, OUTPUT);
+    digitalWrite(PIN_UNDER_CHIP, HIGH);
+  }
+  else {
+   pinMode(PIN_UNDER_CHIP, INPUT);
+   digitalWrite(PIN_UNDER_CHIP, LOW);
+  }
+  
+  /*
+  PORTB |= 1<<4;
+  DDRB |= 1<<4;
+  DDRB &= ~(1<<4);
+  */
+}
+
 void setup() {
   initTimer1();
   initDipSwitch();
@@ -60,7 +77,7 @@ void setup() {
   resetDrive();
   
   digitalWrite(PIN_DEBUG, HIGH);
-  digitalWrite(PIN_UNDER_CHIP, HIGH);
+  enableUnderChip(true);
    
   Serial.print("Floppy controller initialized with MIDI channel ");
   Serial.print(getFloppyAddress(), DEC);
