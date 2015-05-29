@@ -100,11 +100,11 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 
 [GeneratedDocument1]
-DocumentPath=
+DocumentPath=NC Drill\floppy_m0dule.DRR
 DItemRevisionGUID=
 
 [GeneratedDocument2]
-DocumentPath=NC Drill\floppy_m0dule.DRR
+DocumentPath=Project Outputs for PCB_floppy_m0dule\floppy_m0dule.DRR
 DItemRevisionGUID=
 
 [GeneratedDocument3]
@@ -112,74 +112,118 @@ DocumentPath=Gerber\floppy_m0dule.EXTREP
 DItemRevisionGUID=
 
 [GeneratedDocument4]
-DocumentPath=Gerber\floppy_m0dule.GBL
+DocumentPath=Project Outputs for PCB_floppy_m0dule\floppy_m0dule.EXTREP
 DItemRevisionGUID=
 
 [GeneratedDocument5]
-DocumentPath=Gerber\floppy_m0dule.GBO
+DocumentPath=Gerber\floppy_m0dule.GBL
 DItemRevisionGUID=
 
 [GeneratedDocument6]
-DocumentPath=Gerber\floppy_m0dule.GBP
+DocumentPath=Gerber\floppy_m0dule.GBO
 DItemRevisionGUID=
 
 [GeneratedDocument7]
-DocumentPath=Gerber\floppy_m0dule.GBS
+DocumentPath=Gerber\floppy_m0dule.GBP
 DItemRevisionGUID=
 
 [GeneratedDocument8]
-DocumentPath=Gerber\floppy_m0dule.GKO
+DocumentPath=Project Outputs for PCB_floppy_m0dule\floppy_m0dule.GBP
 DItemRevisionGUID=
 
 [GeneratedDocument9]
-DocumentPath=Gerber\floppy_m0dule.GM1
+DocumentPath=Gerber\floppy_m0dule.GBS
 DItemRevisionGUID=
 
 [GeneratedDocument10]
-DocumentPath=Gerber\floppy_m0dule.GM13
+DocumentPath=Gerber\floppy_m0dule.GKO
 DItemRevisionGUID=
 
 [GeneratedDocument11]
-DocumentPath=Gerber\floppy_m0dule.GM15
+DocumentPath=Gerber\floppy_m0dule.GM1
 DItemRevisionGUID=
 
 [GeneratedDocument12]
-DocumentPath=Gerber\floppy_m0dule.GPB
+DocumentPath=Project Outputs for PCB_floppy_m0dule\floppy_m0dule.GM1
 DItemRevisionGUID=
 
 [GeneratedDocument13]
-DocumentPath=Gerber\floppy_m0dule.GPT
+DocumentPath=Gerber\floppy_m0dule.GM13
 DItemRevisionGUID=
 
 [GeneratedDocument14]
-DocumentPath=Gerber\floppy_m0dule.GTL
+DocumentPath=Project Outputs for PCB_floppy_m0dule\floppy_m0dule.GM13
 DItemRevisionGUID=
 
 [GeneratedDocument15]
-DocumentPath=Gerber\floppy_m0dule.GTO
+DocumentPath=Gerber\floppy_m0dule.GM15
 DItemRevisionGUID=
 
 [GeneratedDocument16]
-DocumentPath=Gerber\floppy_m0dule.GTP
+DocumentPath=Project Outputs for PCB_floppy_m0dule\floppy_m0dule.GM15
 DItemRevisionGUID=
 
 [GeneratedDocument17]
-DocumentPath=Gerber\floppy_m0dule.GTS
+DocumentPath=Gerber\floppy_m0dule.GPB
 DItemRevisionGUID=
 
 [GeneratedDocument18]
-DocumentPath=NC Drill\floppy_m0dule.LDP
+DocumentPath=Project Outputs for PCB_floppy_m0dule\floppy_m0dule.GPB
 DItemRevisionGUID=
 
 [GeneratedDocument19]
-DocumentPath=Gerber\floppy_m0dule.REP
+DocumentPath=Gerber\floppy_m0dule.GPT
 DItemRevisionGUID=
 
 [GeneratedDocument20]
-DocumentPath=Gerber\floppy_m0dule.RUL
+DocumentPath=Project Outputs for PCB_floppy_m0dule\floppy_m0dule.GPT
 DItemRevisionGUID=
 
 [GeneratedDocument21]
+DocumentPath=Gerber\floppy_m0dule.GTL
+DItemRevisionGUID=
+
+[GeneratedDocument22]
+DocumentPath=Gerber\floppy_m0dule.GTO
+DItemRevisionGUID=
+
+[GeneratedDocument23]
+DocumentPath=Gerber\floppy_m0dule.GTP
+DItemRevisionGUID=
+
+[GeneratedDocument24]
+DocumentPath=Project Outputs for PCB_floppy_m0dule\floppy_m0dule.GTP
+DItemRevisionGUID=
+
+[GeneratedDocument25]
+DocumentPath=Gerber\floppy_m0dule.GTS
+DItemRevisionGUID=
+
+[GeneratedDocument26]
+DocumentPath=NC Drill\floppy_m0dule.LDP
+DItemRevisionGUID=
+
+[GeneratedDocument27]
+DocumentPath=Project Outputs for PCB_floppy_m0dule\floppy_m0dule.LDP
+DItemRevisionGUID=
+
+[GeneratedDocument28]
+DocumentPath=Gerber\floppy_m0dule.REP
+DItemRevisionGUID=
+
+[GeneratedDocument29]
+DocumentPath=Project Outputs for PCB_floppy_m0dule\floppy_m0dule.REP
+DItemRevisionGUID=
+
+[GeneratedDocument30]
+DocumentPath=Gerber\floppy_m0dule.RUL
+DItemRevisionGUID=
+
+[GeneratedDocument31]
+DocumentPath=Project Outputs for PCB_floppy_m0dule\floppy_m0dule.RUL
+DItemRevisionGUID=
+
+[GeneratedDocument32]
 DocumentPath=NC Drill\floppy_m0dule.TXT
 DItemRevisionGUID=
 
@@ -513,7 +557,7 @@ OutputDefault3=0
 [OutputGroup5]
 Name=Fabrication Outputs
 Description=
-TargetPrinter=Adobe PDF
+TargetPrinter=Microsoft XPS Document Writer
 PrinterOptions=Record=PrinterOptions|Copies=1|Duplex=1|TrueTypeOptions=3|Collate=1|PrintWhat=1
 OutputType1=Board Stack Report
 OutputName1=Report Board Stack
@@ -539,10 +583,10 @@ OutputDocumentPath4=
 OutputVariantName4=[No Variations]
 OutputDefault4=0
 PageOptions4=Record=PageOptions|CenterHorizontal=True|CenterVertical=True|PrintScale=1.00|XCorrection=1.00|YCorrection=1.00|PrintKind=1|BorderSize=5000000|LeftOffset=0|BottomOffset=0|Orientation=2|PaperLength=1000|PaperWidth=1000|Scale=100|PaperSource=7|PrintQuality=-4|MediaType=1|DitherType=10|PaperKind=A4|PrintScaleMode=1
-OutputType5=Gerber
-OutputName5=Gerber Files
+OutputType5=Test Points
+OutputName5=Test Point Report
 OutputDocumentPath5=
-OutputVariantName5=[No Variations]
+OutputVariantName5=
 OutputDefault5=0
 OutputType6=Mask
 OutputName6=Solder/Paste Mask Prints
@@ -555,6 +599,8 @@ OutputName7=NC Drill Files
 OutputDocumentPath7=
 OutputVariantName7=
 OutputDefault7=0
+Configuration7_Name1=OutputConfigurationParameter1
+Configuration7_Item1=BoardEdgeRoutToolDia=2000000|GenerateBoardEdgeRout=False|GenerateDrilledSlotsG85=False|GenerateEIADrillFile=False|GenerateSeparatePlatedNonPlatedFiles=False|NumberOfDecimals=5|NumberOfUnits=2|OptimizeChangeLocationCommands=True|OriginPosition=Relative|Record=DrillView|Units=Imperial|ZeroesMode=SuppressLeadingZeroes
 OutputType8=ODB
 OutputName8=ODB++ Files
 OutputDocumentPath8=
@@ -566,11 +612,13 @@ OutputDocumentPath9=
 OutputVariantName9=
 OutputDefault9=0
 PageOptions9=Record=PageOptions|CenterHorizontal=True|CenterVertical=True|PrintScale=1.00|XCorrection=1.00|YCorrection=1.00|PrintKind=1|BorderSize=5000000|LeftOffset=0|BottomOffset=0|Orientation=2|PaperLength=1000|PaperWidth=1000|Scale=100|PaperSource=7|PrintQuality=-4|MediaType=1|DitherType=10|PaperKind=A4|PrintScaleMode=1
-OutputType10=Test Points
-OutputName10=Test Point Report
+OutputType10=Gerber
+OutputName10=Gerber Files
 OutputDocumentPath10=
-OutputVariantName10=
+OutputVariantName10=[No Variations]
 OutputDefault10=0
+Configuration10_Name1=OutputConfigurationParameter1
+Configuration10_Item1=AddToAllLayerClasses.Set= |AddToAllPlots.Set=SerializeLayerHash.Version~2,ClassName~TLayerToBoolean|CentrePlots=False|DrillDrawingSymbol=GraphicsSymbol|DrillDrawingSymbolSize=500000|EmbeddedApertures=True|FilmBorderSize=10000000|FilmXSize=200000000|FilmYSize=160000000|FlashAllFills=False|FlashPadShapes=True|G54OnApertureChange=False|GenerateDRCRulesFile=True|GenerateReliefShapes=True|GerberUnit=Imperial|IncludeUnconnectedMidLayerPads=True|LayerClassesMirror.Set= |LayerClassesPlot.Set= |LeadingAndTrailingZeroesMode=SuppressLeadingZeroes|MaxApertureSize=2500000|MinusApertureTolerance=50|Mirror.Set=SerializeLayerHash.Version~2,ClassName~TLayerToBoolean|MirrorDrillDrawingPlots=False|MirrorDrillGuidePlots=False|NumberOfDecimals=5|OptimizeChangeLocationCommands=True|OriginPosition=Relative|Panelize=False|Plot.Set=SerializeLayerHash.Version~2,ClassName~TLayerToBoolean,16973830~1,16973832~1,16973834~1,16777217~1,16842751~1,16973835~1,16973833~1,16973831~1,16908289~1,16908301~1,16908303~1,16973837~1,16973848~1,16973849~1|PlotPositivePlaneLayers=False|PlotUsedDrillDrawingLayerPairs=False|PlotUsedDrillGuideLayerPairs=False|PlusApertureTolerance=50|Record=GerberView|SoftwareArcs=False|Sorted=False
 
 [OutputGroup6]
 Name=Report Outputs

@@ -52,7 +52,7 @@ void resetDrive() {
 }
 
 void startStepToggle(uint16_t period) {
-  OCR1A = period;
+  OCR1A = period; // toggle pin after counting to period
   TCCR1B = (1 << WGM12) | (1 << CS11); // set up timer with prescaler = 8 and CTC mode
 }
 

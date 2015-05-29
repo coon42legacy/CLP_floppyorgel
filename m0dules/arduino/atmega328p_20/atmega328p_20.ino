@@ -3,12 +3,14 @@
 
 // Implements a controller based on a Atmel 328p with
 // Arduino bootloader.
-// This version uses CTC mode for the stepper motor.
+// This version uses CTC mode for the stepper motor and
+// SPI with a 595 shift register for some status LEDs.
 
 // Created 30 July 2014
-// Last edit: 11 October 2014
+// Last edit: 29 may 2015
 
 #define BUILD_VER "2.0"
+#include <SPI.h>
 #include "FloppyM0dule.h"
 
 void initDipSwitch() {
@@ -36,6 +38,20 @@ void initRS485() {
   rs485listenMode();
 }
 
+void sendLedStatus(byte data) {
+  digitalWrite(PIN_SHIFT_REGISTER_RCLK, LOW);
+  SPI.transfer(data);
+  digitalWrite(PIN_SHIFT_REGISTER_RCLK, HIGH);
+}
+
+void initStatusLeds() {
+  pinMode(PIN_SHIFT_REGISTER_RCLK, OUTPUT);
+  pinMode(PIN_SHIFT_REGISTER_OE, OUTPUT);
+  digitalWrite(PIN_SHIFT_REGISTER_OE, LOW);
+  digitalWrite(PIN_SHIFT_REGISTER_RCLK, HIGH);
+  SPI.begin();  
+}
+
 void initUART() {
   Serial.begin(9600); // Start serial for output
 }
@@ -49,7 +65,7 @@ void initTimerOC1B() {
   TCCR1A = 0;
   TCCR1B = 0;
   TCNT1  = 0;
-  OCR1A = 2278;   // toggle after counting to 2278 (440 Hz on 16Mhz)
+  OCR1A = 0;
   TCCR1A |= (1 << COM1B0); // Toggle OC1B on Compare Match.
   TCCR1B |= (1 << WGM12); // set up timer with prescaler = 8 and CTC mode in stopped state
 }
@@ -57,13 +73,23 @@ void initTimerOC1B() {
 void setup() {
   initTimerOC1B();
   initDipSwitch();
+  initStatusLeds();
   initFloppyM0dule();
   initUART();
   initRS485();
   resetDrive();
   
-  digitalWrite(PIN_DEBUG, HIGH);
-   
+  while(true) {
+    sendLedStatus(0x04);
+    delayMicroseconds(10);
+    sendLedStatus(0x00);
+    delay(5);
+  }
+
+  for(int i = 0; i < 6; i++) {
+    sendLedStatus(1 << i);
+  }
+
   Serial.print("Floppy controller initialized with MIDI channel ");
   Serial.print(getFloppyAddress(), DEC);
   Serial.println(". (Build Version: " BUILD_VER ")");
