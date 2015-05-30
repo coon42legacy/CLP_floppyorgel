@@ -46,10 +46,16 @@ void sendLedStatus(byte data) {
 
 void initStatusLeds() {
   pinMode(PIN_SHIFT_REGISTER_RCLK, OUTPUT);
-  pinMode(PIN_SHIFT_REGISTER_OE, OUTPUT);
-  digitalWrite(PIN_SHIFT_REGISTER_OE, LOW);
+  pinMode(A3, OUTPUT); // obsolete on v2.1
+  digitalWrite(A3, LOW); // obsolete on v2.1
   digitalWrite(PIN_SHIFT_REGISTER_RCLK, HIGH);
-  SPI.begin();  
+  SPI.begin();
+  sendLedStatus(0x00);
+
+  for(int i = 0; i < 6; i++) {
+    sendLedStatus(1 << i);
+    delay(50);
+  }
 }
 
 void initUART() {
@@ -79,10 +85,7 @@ void setup() {
   initRS485();
   resetDrive();
 
-  for(int i = 0; i < 6; i++) {
-    sendLedStatus(1 << i);
-  }
-
+  sendLedStatus(0x01);
   Serial.print("Floppy controller initialized with MIDI channel ");
   Serial.print(getFloppyAddress(), DEC);
   Serial.println(". (Build Version: " BUILD_VER ")");
