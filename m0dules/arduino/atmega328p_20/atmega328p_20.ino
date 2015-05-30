@@ -78,13 +78,6 @@ void setup() {
   initUART();
   initRS485();
   resetDrive();
-  
-  while(true) {
-    sendLedStatus(0x04);
-    delayMicroseconds(10);
-    sendLedStatus(0x00);
-    delay(5);
-  }
 
   for(int i = 0; i < 6; i++) {
     sendLedStatus(1 << i);
