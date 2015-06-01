@@ -7,7 +7,7 @@
 // SPI with a 595 shift register for some status LEDs.
 
 // Created 30 July 2014
-// Last edit: 29 may 2015
+// Last edit: 01 June 2015
 
 #define BUILD_VER "2.0"
 #include <SPI.h>
@@ -66,23 +66,14 @@ uint8_t getFloppyAddress() {
   return (~PIND >> 2) & 0x3F;
 }
 
-void initTimerOC1B() {
-  pinMode (10, OUTPUT); // PB2 (OC1B)
-  TCCR1A = 0;
-  TCCR1B = 0;
-  TCNT1  = 0;
-  OCR1A = 0;
-  TCCR1A |= (1 << COM1B0); // Toggle OC1B on Compare Match.
-  TCCR1B |= (1 << WGM12); // set up timer with prescaler = 8 and CTC mode in stopped state
-}
-
 void setup() {
-  initTimerOC1B();
   initDipSwitch();
   initStatusLeds();
   initFloppyM0dule();
   initUART();
   initRS485();
+
+  Serial.println("resetting drive...");
   resetDrive();
 
   sendLedStatus(0x01);

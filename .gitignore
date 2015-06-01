@@ -6,3 +6,79 @@
 /m0dules/arduino/atmega328p/pcb/__Previews
 /m0dules/arduino/atmega328p/pcb/Status Report.Txt
 /m0dules/arduino/atmega328p/pcb/*.PDF
+/m0dules/arduino/atmega328p_10/pcb/Gerber/*.GBL
+/m0dules/arduino/atmega328p_10/pcb/Gerber/*.GTL
+/m0dules/arduino/atmega328p_10/pcb/Gerber/*.GBO
+/m0dules/arduino/atmega328p_10/pcb/Gerber/*.GBS
+/m0dules/arduino/atmega328p_10/pcb/Gerber/*.GBP
+/m0dules/arduino/atmega328p_10/pcb/Gerber/*.GTO
+/m0dules/arduino/atmega328p_10/pcb/Gerber/*.GKO
+/m0dules/arduino/atmega328p_10/pcb/Gerber/__Previews/*.REPPreview
+/m0dules/arduino/atmega328p_10/pcb/Gerber/floppy_m0dule1.2/*.GBL
+/m0dules/arduino/atmega328p_10/pcb/Gerber/floppy_m0dule1.2/*.GBO
+/m0dules/arduino/atmega328p_10/pcb/Gerber/floppy_m0dule1.2/*.GBS
+/m0dules/arduino/atmega328p_10/pcb/Gerber/floppy_m0dule1.2/*.GKO
+/m0dules/arduino/atmega328p_10/pcb/Gerber/floppy_m0dule1.2/*.GTL
+/m0dules/arduino/atmega328p_10/pcb/Gerber/floppy_m0dule1.2/*.GTO
+/m0dules/arduino/atmega328p_10/pcb/Gerber/floppy_m0dule1.2/*.GTS
+/m0dules/arduino/atmega328p_10/pcb/Gerber/floppy_m0dule1.2/*.TXT
+/m0dules/arduino/atmega328p_10/pcb/Gerber/*.EXTREP
+/m0dules/arduino/atmega328p_10/pcb/Gerber/*.GM1
+/m0dules/arduino/atmega328p_10/pcb/Gerber/*.GM13
+/m0dules/arduino/atmega328p_10/pcb/Gerber/*.GM15
+/m0dules/arduino/atmega328p_10/pcb/Gerber/*.GPB
+/m0dules/arduino/atmega328p_10/pcb/Gerber/*.GPT
+/m0dules/arduino/atmega328p_10/pcb/Gerber/*.GTP
+/m0dules/arduino/atmega328p_10/pcb/Gerber/*.GTS
+/m0dules/arduino/atmega328p_10/pcb/Gerber/*.REP
+/m0dules/arduino/atmega328p_10/pcb/Gerber/*.RUL
+/m0dules/arduino/atmega328p_10/pcb/Gerber/*.apr
+/m0dules/arduino/atmega328p_10/pcb/Gerber/*.rar
+/m0dules/arduino/atmega328p_10/pcb/Gerber/*.zip
+/m0dules/arduino/atmega328p_10/pcb/Gerber/floppy_m0dule1.2/*.zip
+/m0dules/arduino/atmega328p_10/pcb/History/*.Zip
+/m0dules/arduino/atmega328p_10/pcb/Project Logs for PCB_floppy_m0dule/*.LOG
+/m0dules/arduino/atmega328p_20/pcb/History/*.Zip
+/m0dules/arduino/atmega328p_20/pcb/Gerber/__Previews/*.REPPreview
+/m0dules/arduino/atmega328p_20/pcb/Gerber/*.APR_LIB
+/m0dules/arduino/atmega328p_20/pcb/Gerber/*.EXTREP
+/m0dules/arduino/atmega328p_20/pcb/Gerber/*.GBL
+/m0dules/arduino/atmega328p_20/pcb/Gerber/*.GBO
+/m0dules/arduino/atmega328p_20/pcb/Gerber/*.GBP
+/m0dules/arduino/atmega328p_20/pcb/Gerber/*.GBS
+/m0dules/arduino/atmega328p_20/pcb/Gerber/*.GKO
+/m0dules/arduino/atmega328p_20/pcb/Gerber/*.GM1
+/m0dules/arduino/atmega328p_20/pcb/Gerber/*.GM13
+/m0dules/arduino/atmega328p_20/pcb/Gerber/*.GM15
+/m0dules/arduino/atmega328p_20/pcb/Gerber/*.GPB
+/m0dules/arduino/atmega328p_20/pcb/Gerber/*.GPT
+/m0dules/arduino/atmega328p_20/pcb/Gerber/*.GTL
+/m0dules/arduino/atmega328p_20/pcb/Gerber/*.GTO
+/m0dules/arduino/atmega328p_20/pcb/Gerber/*.GTP
+/m0dules/arduino/atmega328p_20/pcb/Gerber/*.GTS
+/m0dules/arduino/atmega328p_20/pcb/Gerber/*.REP
+/m0dules/arduino/atmega328p_20/pcb/Gerber/*.RUL
+/m0dules/arduino/atmega328p_20/pcb/Gerber/*.apr
+/m0dules/arduino/atmega328p_20/pcb/Gerber/*.rar
+/m0dules/arduino/atmega328p_20/pcb/Gerber/*.zip
+/m0dules/arduino/atmega328p_20/pcb/Gerber/floppy_m0dule1.2/*.GBL
+/m0dules/arduino/atmega328p_20/pcb/Gerber/floppy_m0dule1.2/*.GBO
+/m0dules/arduino/atmega328p_20/pcb/Gerber/floppy_m0dule1.2/*.GBS
+/m0dules/arduino/atmega328p_20/pcb/Gerber/floppy_m0dule1.2/*.GKO
+/m0dules/arduino/atmega328p_20/pcb/Gerber/floppy_m0dule1.2/*.GTL
+/m0dules/arduino/atmega328p_20/pcb/Gerber/floppy_m0dule1.2/*.GTO
+/m0dules/arduino/atmega328p_20/pcb/Gerber/floppy_m0dule1.2/*.GTS
+/m0dules/arduino/atmega328p_20/pcb/Gerber/floppy_m0dule1.2/*.TXT
+/m0dules/arduino/atmega328p_20/pcb/Gerber/floppy_m0dule1.2/*.zip
+/m0dules/arduino/atmega328p_20/pcb/NC Drill/__Previews/*.LDPPreview
+/m0dules/arduino/atmega328p_20/pcb/NC Drill/*.DRR
+/m0dules/arduino/atmega328p_20/pcb/NC Drill/*.LDP
+/m0dules/arduino/atmega328p_20/pcb/NC Drill/*.TXT
+/m0dules/arduino/atmega328p_20/pcb/Project Logs for PCB_floppy_m0dule/*.LOG
+/m0dules/arduino/atmega328p_10/pcb/Gerber/*.APR_LIB
+/m0dules/arduino/atmega328p_10/pcb/NC Drill/__Previews/*.LDPPreview
+/m0dules/arduino/atmega328p_10/pcb/NC Drill/*.DRR
+/m0dules/arduino/atmega328p_10/pcb/NC Drill/*.LDP
+/m0dules/arduino/atmega328p_10/pcb/NC Drill/*.TXT
+/m0dules/arduino/atmega328p_20/pcb/*.PDF
+/m0dules/arduino/atmega328p_10/pcb/*.PDF

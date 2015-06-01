@@ -1,5 +1,19 @@
 #include "FloppyM0dule.h"
 
+volatile uint8_t currentHeadDirection = FORWARD;
+volatile uint8_t currentHeadPosition  = 0;
+
+void initTimerOC1B() {
+  pinMode (10, OUTPUT); // PB2 (OC1B)
+  TCCR1A = 0;
+  TCCR1B = 0;
+  TCNT1  = 0;
+  OCR1A = 0;
+  TCCR1A |= (1 << COM1B0); // Toggle OC1B on Compare Match.
+  TCCR1B |= (1 << WGM12); // set up timer with prescaler = 8 and CTC mode in stopped state
+  TIMSK1 |= (1 << OCIE1B); // Enable TIMER1_COMPB interrupt on toggle
+}
+
 void initFloppyM0dule() {
   pinMode(PIN_DRIVE_SELECT, OUTPUT); 
   pinMode(PIN_DIRECTION,    OUTPUT); 
@@ -7,6 +21,8 @@ void initFloppyM0dule() {
   digitalWrite(PIN_DRIVE_SELECT, LOW);
   digitalWrite(PIN_DIRECTION,    LOW);
   digitalWrite(PIN_STEP,         LOW);
+
+  initTimerOC1B(); // for step pin toggeling
 }
 
 void driveSelect(boolean enable) {
@@ -18,7 +34,13 @@ void setHeadDirection(int headDirection) {
   digitalWrite(PIN_DIRECTION, headDirection == FORWARD ? LOW : HIGH);
 }
 
-void toggleStep() {
+// on drive reset
+ISR (TIMER1_COMPA_vect) {
+  currentHeadPosition--; 
+}
+
+// on toggle step
+ISR (TIMER1_COMPB_vect) { // Timer/Counter1 Compare Match B interrupt
   // Switch head direction if end has been reached
   if (currentHeadPosition >= 2 * MAX_STEP_POSITION)
     setHeadDirection(BACKWARD);
@@ -26,29 +48,33 @@ void toggleStep() {
     setHeadDirection(FORWARD);
     
   currentHeadPosition = currentHeadDirection == FORWARD ? currentHeadPosition + 1 : currentHeadPosition - 1;
-  
-  // Pulse the step pin
-  digitalWrite(PIN_STEP, currentStepPinState ? LOW : HIGH);  
-  currentStepPinState = ~currentStepPinState;
+}
+
+void enableRestMode(boolean enable) {
+  if(enable) {
+    setHeadDirection(BACKWARD);
+    currentHeadPosition = 2 * MAX_STEP_POSITION;
+    TIMSK1 &= ~(1 << OCIE1B); // Disable TIMER1_COMPB interrupt on toggle
+    TIMSK1 |= (1 << OCIE1A); // Enable TIMER1_COMPA interrupt on toggle (Reset ISR)
+  }
+  else {
+    setHeadDirection(FORWARD);
+    TIMSK1 &= ~(1 << OCIE1A); // Disable TIMER1_COMPA interrupt on toggle (Reset ISR)
+    TIMSK1 |= (1 << OCIE1B); // Enable TIMER1_COMPB interrupt on toggle
+  }
 }
 
 // Stops playing of current note and set read/write head back to track 0.
-void resetDrive() {
-  mute(); // Stop playing tone
+void resetDrive() {  
+  enableRestMode(true);
   
-  // Set read / write head to track 0
-  driveSelect(true);
-  for (uint8_t i = 0; i < 80; i++) { // For max drive's position
-    setHeadDirection(BACKWARD);
-    digitalWrite(PIN_STEP, HIGH);
-    delayMicroseconds(1500);
-    digitalWrite(PIN_STEP, LOW);
-    delayMicroseconds(1500);
-  }
+  driveSelect(true);  
+  playTone(4000);
+  while(currentHeadPosition); // wait until drive is reset...
+  mute();
   driveSelect(false);
 
-  currentHeadPosition = 0; // We're reset.
-  setHeadDirection(FORWARD); // Ready to go forward.
+  enableRestMode(false);
 }
 
 void startStepToggle(uint16_t period) {
